@@ -1,38 +1,110 @@
-  907  kubectl cluster-info\n
-  915  kubectl get nodes\n
- 1235  kubectl config --help\n
- 1236  kubectl config current context\n
- 1237  kubectl config current-context\n
- 1238  kubectl config delete context yckuber
- 1239  kubectl config delete-context yc-kuber
- 1240  kubectl config delete-cluster yc-managed-k8s-catt02sp5i6t5sqeouvf
- 1241  kubectl config delete-cluster yc-managed-k8s-catp57fl15tnsclphp04
- 1243  kubectl config delete-user yc-managed-k8s-catp57fl15tnsclphp04
- 1244  kubectl config delete-user yc-managed-k8s-catt02sp5i6t5sqeouvf\n
- 1245  kubectl config view\n
- 1257  kubectl -n stackrox port-forward svc/central 18443:443
- 1258  kubectl port-forward service/scanner 30000:8080 \ --namespace stackrox\n
- 1263  kubectl port-forward service/scanner 30000:8080  --namespace stackrox\n
- 1282  kubectl get no
- 1283  kubectl get --help
- 2025  kubectl cluster-info
- 2027  kubectl get nodes
- 2029  kubectl get pods -A
- 2030  kubectl get services -A
- 2044  kubectl get namespaces
- 2046  kubectl apply -f namespace.yml
- 2054  kubectl get deployments -n development
- 2056  kubectl delete pod pod-info-deployment-7587d5cc86-74sck  -n development
- 2057  kubectl get pods -n development
- 2058  kubectl describe pod pod-info-deployment-7587d5cc86-2h8lm -n development
- 2062  kubectl apply -f busybox.yml
- 2063  kubectl get pods
- 2065  kubectl logs pod-info-deployment-7587d5cc86-2h8lm  -n development
- 2073  kubectl logs quote-service-6bdf855d9f-7nsvk  -n development
+## start cluster
+minikube start
+
+kubectl get pods -A
+NAMESPACE     NAME                               READY   STATUS    RESTARTS   AGE
+kube-system   coredns-5dd5756b68-qgrhc           1/1     Running   0          2m32s
+kube-system   etcd-minikube                      1/1     Running   0          2m43s
+kube-system   kube-apiserver-minikube            1/1     Running   0          2m43s
+kube-system   kube-controller-manager-minikube   1/1     Running   0          2m43s
+kube-system   kube-proxy-6hpsx                   1/1     Running   0          2m32s
+kube-system   kube-scheduler-minikube            1/1     Running   0          2m43s
+kube-system   storage-provisioner                1/1     Running   0          2m40s
+                                                                                    
+
+kubectl cluster-info     
+Kubernetes control plane is running at https://192.168.59.102:8443
+CoreDNS is running at https://192.168.59.102:8443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+
+kubectl get nodes   
+NAME       STATUS   ROLES           AGE     VERSION
+minikube   Ready    control-plane   4m28s   v1.28.3
+
+kubectl get services -A
+NAMESPACE     NAME         TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)                  AGE
+default       kubernetes   ClusterIP   10.96.0.1    <none>        443/TCP                  5m11s
+kube-system   kube-dns     ClusterIP   10.96.0.10   <none>        53/UDP,53/TCP,9153/TCP   5m9s
+
+kubectl get nodes
+NAME       STATUS   ROLES           AGE     VERSION
+minikube   Ready    control-plane   6m16s   v1.28.3
+
+kubectl get namespaces
+NAME              STATUS   AGE
+default           Active   6m58s
+kube-node-lease   Active   6m58s
+kube-public       Active   6m58s
+kube-system       Active   6m58s
+
+kubectl get ns                 
+NAME                   STATUS   AGE
+default                Active   90m
+development            Active   33m
+kube-node-lease        Active   90m
+kube-public            Active   90m
+kube-system            Active   90m
+kubernetes-dashboard   Active   75m
+production             Active   33m
+
+
+kubectl api-resources
+
+kubectl get pods -o wide -A
+NAMESPACE     NAME                               READY   STATUS    RESTARTS   AGE     IP               NODE       NOMINATED NODE   READINESS GATES
+kube-system   coredns-5dd5756b68-qgrhc           1/1     Running   0          8m22s   10.244.0.2       minikube   <none>           <none>
+kube-system   etcd-minikube                      1/1     Running   0          8m33s   192.168.59.102   minikube   <none>           <none>
+kube-system   kube-apiserver-minikube            1/1     Running   0          8m33s   192.168.59.102   minikube   <none>           <none>
+kube-system   kube-controller-manager-minikube   1/1     Running   0          8m33s   192.168.59.102   minikube   <none>           <none>
+kube-system   kube-proxy-6hpsx                   1/1     Running   0          8m22s   192.168.59.102   minikube   <none>           <none>
+kube-system   kube-scheduler-minikube            1/1     Running   0          8m33s   192.168.59.102   minikube   <none>           <none>
+kube-system   storage-provisioner                1/1     Running   0          8m30s   192.168.59.102   minikube   <none>           <none>
+
+kubectl config current-context
+
+# Show Dashboard
+minikube dashboard
+
+
+kubectl config view
+
+
+kubectl config delete-context yc-kuber
+kubectl config delete-cluster yc-managed-k8s-catp57fl15tnsclphp04
+kubectl config delete-user yc-managed-k8s-catp57fl15tnsclphp04
+
+
+kubectl -n stackrox port-forward svc/central 18443:443
+kubectl port-forward service/scanner 30000:8080 \ --namespace stackrox\n
+kubectl port-forward service/scanner 30000:8080  --namespace stackrox\n
+
+
+kubectl apply -f namespace.yml
+namespace/development created
+namespace/production created
+
+kubectl apply -f deployment.yaml 
+deployment.apps/pod-info-deployment created
+
+kubectl get pods -n development 
+NAME                                   READY   STATUS    RESTARTS   AGE
+pod-info-deployment-7d75675b59-qx25d   1/1     Running   0          40s
+pod-info-deployment-7d75675b59-rtbmz   1/1     Running   0          40s
+pod-info-deployment-7d75675b59-zvb48   1/1     Running   0          40s
+
+kubectl get deployments -n development
+NAME                  READY   UP-TO-DATE   AVAILABLE   AGE
+pod-info-deployment   3/3     3            3           74s
+
+kubectl delete pod pod-info-deployment-7587d5cc86-74sck  -n development
+
+kubectl describe pod pod-info-deployment-7587d5cc86-2h8lm -n development
+
+# See logs
+
+kubectl logs pod-info-deployment-7587d5cc86-2h8lm  -n development
+kubectl logs quote-service-6bdf855d9f-7nsvk  -n development
  2078  kubectl apply -f quote.yml
- 2092  kubectl --help
- 2093  kubectl --api-resources
- 2094  kubectl api-resources
+
  2104  kubectl apply -f deployment.yaml
  2105  kubectl get pods -n development -o wide
  2106  kubectl delete -f deployment.yaml
@@ -40,4 +112,4 @@
  2108  kubectl delete -f quote.yml
  2109  kubectl delete -f busybox.yml
  2110  kubectl delete -f namespace.yml
- 2115  kubectl get pods 
+
